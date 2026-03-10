@@ -1,6 +1,0 @@
-pandas
-nltk
-scipy
-torch
-transformers
-streamlit
