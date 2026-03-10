@@ -1,3 +1,4 @@
+import streamlit as st
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -9,8 +10,17 @@ nltk.download("vader_lexicon")
 sia = SentimentIntensityAnalyzer()
 
 MODEL = "cardiffnlp/twitter-roberta-base-sentiment"
-tokenizer = AutoTokenizer.from_pretrained(MODEL)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+
+
+@st.cache_resource
+def load_model():
+    tokenizer = AutoTokenizer.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    return tokenizer, model
+
+
+tokenizer, model = load_model()
+
 
 def vader_scores(text):
     s = sia.polarity_scores(text)
@@ -21,31 +31,41 @@ def vader_scores(text):
         "compound": s["compound"]
     }
 
+
 def roberta_scores(text):
     encoded = tokenizer(text, return_tensors="pt", truncation=True)
     output = model(**encoded)
     scores = softmax(output[0][0].detach().numpy())
+
     return {
         "neg": scores[0],
         "neu": scores[1],
         "pos": scores[2]
     }
 
+
 def label_from_scores(pos, neu, neg):
+
     if pos > neg and pos > neu:
         return "Positive"
+
     if neg > pos and neg > neu:
         return "Negative"
+
     return "Neutral"
 
+
 def emoji_from_label(label):
+
     return {
         "Positive": "😊",
         "Negative": "😠",
         "Neutral": "😐"
     }[label]
 
+
 def final_sentiment(vader_label, roberta_label, roberta):
+
     if vader_label == roberta_label:
         return vader_label
 
@@ -57,7 +77,9 @@ def final_sentiment(vader_label, roberta_label, roberta):
 
     return "Neutral"
 
+
 def analyze(text):
+
     vader = vader_scores(text)
     roberta = roberta_scores(text)
 

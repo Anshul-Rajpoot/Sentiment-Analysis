@@ -1,6 +1,9 @@
+streamlit>=1.25
 pandas
+numpy
+scikit-learn
 nltk
-scipy
-torch
 transformers
-streamlit
+torch
+scipy
+altair<5
