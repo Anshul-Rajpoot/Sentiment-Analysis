@@ -11,6 +11,7 @@ text = st.text_area("Enter your text")
 
 if st.button("Analyze") and text.strip():
 
+    
     result = analyze(text)
 
     st.subheader("Final Result")
