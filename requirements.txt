@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 scipy
 torch
 transformers
@@ -10,3 +11,14 @@ altair<5
 
 
 
+=======
+streamlit>=1.25
+pandas
+numpy
+scikit-learn
+nltk
+transformers
+torch
+scipy
+altair<5
+>>>>>>> b29b427 (optimize sentiment analysis deployment)
