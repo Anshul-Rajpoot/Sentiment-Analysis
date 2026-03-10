@@ -1,6 +1,7 @@
-pandas
-nltk
-scipy
-torch
-transformers
+
 streamlit
+pandas
+numpy
+scikit-learn
+nltk
+altair<5
