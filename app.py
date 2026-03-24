@@ -1,48 +1,85 @@
-import streamlit as st
-from model import analyze
+import nltk
+import string
+import joblib
 
-st.set_page_config(page_title="Sentiment Analysis System", page_icon="💬")
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
-# Sidebar developer card
-st.sidebar.markdown(
-    """
-    <div style="
-        background-color:#1f2937;
-        padding:20px;
-        border-radius:12px;
-        color:white;
-        text-align:left;
-        box-shadow:0px 4px 15px rgba(0,0,0,0.3);
-    ">
-        <h3 style="margin-bottom:10px;">👨‍💻 Developer</h3>
-        <p><b>Name:</b> Anshul Rajpoot</p>
-        <p><b>Scholar Number:</b> 2311401168</p>
-        <p><b>College:</b> MANIT Bhopal</p>
-        <p><b>Branch:</b> Electronics & Communication</p>
-        <p><b>Project:</b> Sentiment Analysis System</p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 
-st.title("💬 Sentiment Analysis System")
+# Download resources
+nltk.download("stopwords")
+nltk.download("wordnet")
 
-st.write("Enter any sentence and the system will analyze its sentiment using VADER and RoBERTa models.")
+# Initialize tools
+stop_words = set(stopwords.words("english"))
+lemmatizer = WordNetLemmatizer()
 
-text = st.text_area("Enter your text")
+# Preprocessing function
+def preprocess(text):
+    text = text.lower()
+    text = text.translate(str.maketrans("", "", string.punctuation))
 
-if st.button("Analyze") and text.strip():
+    words = text.split()
+    words = [w for w in words if w not in stop_words]
+    words = [lemmatizer.lemmatize(w) for w in words]
 
-    
-    result = analyze(text)
+    return " ".join(words)
 
-    st.subheader("Final Result")
-    st.markdown(f"## {result['final_label']} {result['emoji']}")
+# Training function
+def train_model():
+    data = {
+        "text": [
+            "I love this product",
+            "This is amazing",
+            "Very bad experience",
+            "I hate it",
+            "Not good",
+            "Absolutely fantastic",
+            "Worst purchase ever",
+            "Really happy with this",
+            "Terrible quality",
+            "Very satisfied"
+        ],
+        "label": [
+            "positive", "positive", "negative", "negative", "negative",
+            "positive", "negative", "positive", "negative", "positive"
+        ]
+    }
 
-    st.subheader("Model Breakdown")
+    texts = [preprocess(t) for t in data["text"]]
+    labels = data["label"]
 
-    st.write(f"VADER → {result['vader_label']}")
-    st.progress(int(result["vader"]["pos"] * 100))
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(texts)
 
-    st.write(f"RoBERTa → {result['roberta_label']}")
-    st.progress(int(result["roberta"]["pos"] * 100))
+    model = LogisticRegression()
+    model.fit(X, labels)
+
+    # Save
+    joblib.dump(model, "model.pkl")
+    joblib.dump(vectorizer, "vectorizer.pkl")
+
+    return model, vectorizer
+
+# Load or train
+def load_model():
+    try:
+        model = joblib.load("model.pkl")
+        vectorizer = joblib.load("vectorizer.pkl")
+    except:
+        model, vectorizer = train_model()
+
+    return model, vectorizer
+
+# Prediction function
+def predict(text):
+    model, vectorizer = load_model()
+
+    clean_text = preprocess(text)
+    vector = vectorizer.transform([clean_text])
+
+    prediction = model.predict(vector)[0]
+
+    return prediction
