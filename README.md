@@ -1,7 +1,11 @@
-# 😊 Sentiment Analysis System (VADER + RoBERTa)
+# 😊 Sentiment Analysis System (Hybrid + ML Models)
 
-A **hybrid sentiment analysis system** built using **NLTK (VADER)** and **Hugging Face RoBERTa**, combined with a **Streamlit web interface**.
-The system analyzes user text and predicts **Positive, Negative, or Neutral** sentiment with an emoji-based output.
+A **comprehensive sentiment analysis system** combining both:
+
+- 🔹 **Classical Machine Learning (TF-IDF + Logistic Regression)**
+- 🔹 **Hybrid NLP Models (VADER + RoBERTa)**
+
+Built with a **Streamlit web interface**, the system classifies text into **Positive, Negative, or Neutral** sentiment with emoji-based output.
 
 ---
 
@@ -12,117 +16,61 @@ https://sentiment-analysis-anshul-rajpoot.streamlit.app/
 
 ---
 
-## 📸 Screenshot
-
-<img width="959" height="786" alt="Sentiment Analysis App Screenshot" src="https://github.com/user-attachments/assets/d5b09f38-1714-4bd1-a306-abbc1561b3ca" />
-
----
 
 ## 🚀 Project Overview
 
-This project performs sentiment analysis by **combining lexicon-based and transformer-based models** to improve reliability and accuracy.
+This project demonstrates **multiple approaches to sentiment analysis**:
 
-The system integrates two approaches:
+### 🔹 1. Classical ML Pipeline
+- Text preprocessing using **NLTK**
+- Feature extraction using **TF-IDF**
+- Classification using **Logistic Regression**
+- Evaluation using **Confusion Matrix, Precision, Recall, and F1-score**
 
-* **VADER** → Fast rule-based sentiment scoring
-* **RoBERTa (Twitter Sentiment Model)** → Deep learning model for contextual understanding
+### 🔹 2. Hybrid Deep Learning System
+- **VADER** → Rule-based sentiment scoring
+- **RoBERTa** → Transformer-based contextual understanding
+- **Custom decision logic** to combine both outputs
 
-A **custom decision logic layer** combines predictions from both models to generate a final sentiment label.
+This makes the project a **complete end-to-end NLP system** covering both **traditional ML and modern deep learning approaches**.
 
 ---
 
 ## 🧠 How It Works
 
-1. User enters text in the **Streamlit web application**
-2. Text is analyzed using:
+### 🔹 ML Pipeline (TF-IDF + Logistic Regression)
 
-   * **VADER SentimentIntensityAnalyzer**
-   * **RoBERTa Transformer model**
-3. Both models generate sentiment probability scores
-4. A rule-based fusion system determines the final sentiment
-5. Result is displayed with **emoji and confidence bars**
+1. Input text is preprocessed:
+   - Tokenization
+   - Stop-word removal
+   - Lemmatization
+2. Text is converted into numerical vectors using **TF-IDF**
+3. Logistic Regression model predicts sentiment
+4. Model performance is evaluated using standard metrics
+
+---
+
+### 🔹 Hybrid Model (VADER + RoBERTa)
+
+1. User enters text in the **Streamlit app**
+2. Text is analyzed using:
+   - **VADER (NLTK)**
+   - **RoBERTa (Hugging Face Transformer)**
+3. Both models generate sentiment scores
+4. A **fusion logic layer** determines final sentiment
+5. Output displayed with emoji and confidence bars
 
 ---
 
 ## 📂 Project Structure
-
-```
 Sentiment-Analysis/
 │
-├── app.py             # Streamlit web interface
-├── model.py           # Sentiment analysis logic
-├── requirements.txt   # Python dependencies
-├── runtime.txt        # Python version for deployment
+├── app.py # Streamlit web interface
+├── model.py # Hybrid sentiment logic (VADER + RoBERTa)
+├── train_model.py # ML model training (TF-IDF + Logistic Regression)
+├── predict.py # ML model prediction
+├── model.pkl # Trained ML model
+├── vectorizer.pkl # TF-IDF vectorizer
+├── requirements.txt # Dependencies
+├── runtime.txt # Python version
 └── README.md
-```
-
----
-
-## 🛠 Technologies Used
-
-* **Python**
-* **NLTK (VADER)**
-* **Hugging Face Transformers**
-* **RoBERTa (twitter-roberta-base-sentiment)**
-* **Streamlit**
-* **SciPy**
-
----
-
-## 📌 Models Used
-
-### ✔ VADER (Lexicon-Based)
-
-* Rule-based sentiment analysis model
-* Designed for **social media text**
-* Returns polarity scores:
-
-```
-positive
-neutral
-negative
-compound
-```
-
----
-
-### ✔ RoBERTa (Transformer-Based)
-
-* Pretrained **Twitter sentiment transformer**
-* Captures **context, tone, and sarcasm**
-* Outputs probability scores for:
-
-```
-Positive
-Neutral
-Negative
-```
-
----
-
-## 🔍 Sentiment Fusion Logic
-
-Final sentiment is determined using the following rules:
-
-* If **VADER and RoBERTa agree** → return that sentiment
-* If **RoBERTa confidence > 0.6** → prioritize RoBERTa
-* Otherwise → return **Neutral**
-
-This hybrid approach balances:
-
-* ⚡ **Speed (VADER)**
-* 🧠 **Contextual understanding (RoBERTa)**
-
----
-
-## 👨‍💻 Author
-
-**Anshul Rajpoot**
-ECE Undergraduate | NLP & Machine Learning Enthusiast
-
-🔗 GitHub
-https://github.com/Anshul-Rajpoot
-
----
-
-⭐ If you like this project, consider **starring the repository**!
