@@ -17,7 +17,7 @@ st.sidebar.markdown(
         <p><b>Scholar Number:</b> 2311401168</p>
         <p><b>College:</b> MANIT Bhopal</p>
         <p><b>Branch:</b> Electronics & Communication</p>
-        <p><b>Project:</b> Movie Recommendation System</p>
+        <p><b>Project:</b> Sentiment Analysis System</p>
     </div>
     """,
     unsafe_allow_html=True
