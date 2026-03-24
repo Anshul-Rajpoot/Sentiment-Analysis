@@ -1,106 +1,85 @@
-import streamlit as st
 import nltk
-from nltk.sentiment import SentimentIntensityAnalyzer
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from scipy.special import softmax
+import string
+import joblib
 
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
-nltk.download("punkt")
-nltk.download("vader_lexicon")
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 
-sia = SentimentIntensityAnalyzer()
+# Download resources
+nltk.download("stopwords")
+nltk.download("wordnet")
 
-MODEL = "cardiffnlp/twitter-roberta-base-sentiment"
+# Initialize tools
+stop_words = set(stopwords.words("english"))
+lemmatizer = WordNetLemmatizer()
 
+# Preprocessing function
+def preprocess(text):
+    text = text.lower()
+    text = text.translate(str.maketrans("", "", string.punctuation))
 
-@st.cache_resource
+    words = text.split()
+    words = [w for w in words if w not in stop_words]
+    words = [lemmatizer.lemmatize(w) for w in words]
+
+    return " ".join(words)
+
+# Training function
+def train_model():
+    data = {
+        "text": [
+            "I love this product",
+            "This is amazing",
+            "Very bad experience",
+            "I hate it",
+            "Not good",
+            "Absolutely fantastic",
+            "Worst purchase ever",
+            "Really happy with this",
+            "Terrible quality",
+            "Very satisfied"
+        ],
+        "label": [
+            "positive", "positive", "negative", "negative", "negative",
+            "positive", "negative", "positive", "negative", "positive"
+        ]
+    }
+
+    texts = [preprocess(t) for t in data["text"]]
+    labels = data["label"]
+
+    vectorizer = TfidfVectorizer()
+    X = vectorizer.fit_transform(texts)
+
+    model = LogisticRegression()
+    model.fit(X, labels)
+
+    # Save
+    joblib.dump(model, "model.pkl")
+    joblib.dump(vectorizer, "vectorizer.pkl")
+
+    return model, vectorizer
+
+# Load or train
 def load_model():
-    tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-    return tokenizer, model
+    try:
+        model = joblib.load("model.pkl")
+        vectorizer = joblib.load("vectorizer.pkl")
+    except:
+        model, vectorizer = train_model()
 
+    return model, vectorizer
 
-tokenizer, model = load_model()
+# Prediction function
+def predict(text):
+    model, vectorizer = load_model()
 
+    clean_text = preprocess(text)
+    vector = vectorizer.transform([clean_text])
 
-def vader_scores(text):
-    s = sia.polarity_scores(text)
-    return {
-        "pos": s["pos"],
-        "neu": s["neu"],
-        "neg": s["neg"],
-        "compound": s["compound"]
-    }
+    prediction = model.predict(vector)[0]
 
-
-def roberta_scores(text):
-    encoded = tokenizer(text, return_tensors="pt", truncation=True)
-    output = model(**encoded)
-    scores = softmax(output[0][0].detach().numpy())
-
-    return {
-        "neg": scores[0],
-        "neu": scores[1],
-        "pos": scores[2]
-    }
-
-
-def label_from_scores(pos, neu, neg):
-
-    if pos > neg and pos > neu:
-        return "Positive"
-
-    if neg > pos and neg > neu:
-        return "Negative"
-
-    return "Neutral"
-
-
-def emoji_from_label(label):
-
-    return {
-        "Positive": "😊",
-        "Negative": "😠",
-        "Neutral": "😐"
-    }[label]
-
-
-def final_sentiment(vader_label, roberta_label, roberta):
-
-    if vader_label == roberta_label:
-        return vader_label
-
-    if roberta_label == "Negative" and roberta["neg"] > 0.6:
-        return "Negative"
-
-    if roberta_label == "Positive" and roberta["pos"] > 0.6:
-        return "Positive"
-
-    return "Neutral"
-
-
-def analyze(text):
-
-    vader = vader_scores(text)
-    roberta = roberta_scores(text)
-
-    vader_label = label_from_scores(
-        vader["pos"], vader["neu"], vader["neg"]
-    )
-
-    roberta_label = label_from_scores(
-        roberta["pos"], roberta["neu"], roberta["neg"]
-    )
-
-    final_label = final_sentiment(
-        vader_label, roberta_label, roberta
-    )
-
-    return {
-        "vader": vader,
-        "roberta": roberta,
-        "vader_label": vader_label,
-        "roberta_label": roberta_label,
-        "final_label": final_label,
-        "emoji": emoji_from_label(final_label)
-    }
+    return prediction
