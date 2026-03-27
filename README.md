@@ -1,76 +1,106 @@
-# 😊 Sentiment Analysis System (Hybrid + ML Models)
+# 😊 Sentiment Analysis System
 
-A **comprehensive sentiment analysis system** combining both:
+A **sentiment analysis web application** that classifies text into **Positive, Negative, or Neutral** using a **classical machine learning pipeline**.
 
-- 🔹 **Classical Machine Learning (TF-IDF + Logistic Regression)**
-- 🔹 **Hybrid NLP Models (VADER + RoBERTa)**
-
-Built with a **Streamlit web interface**, the system classifies text into **Positive, Negative, or Neutral** sentiment with emoji-based output.
+Built with an interactive **Streamlit interface** for real-time predictions.
 
 ---
 
 ## 🚀 Live Demo
 
-🔗 **Try the App:**
-https://sentiment-analysis-anshul-rajpoot.streamlit.app/
+🔗 https://sentiment-analysis-anshul-rajpoot.streamlit.app/
 
 ---
 
+## ⚡ Key Features
 
-## 🚀 Project Overview
-
-This project demonstrates **multiple approaches to sentiment analysis**:
-
-### 🔹 1. Classical ML Pipeline
-- Text preprocessing using **NLTK**
-- Feature extraction using **TF-IDF**
-- Classification using **Logistic Regression**
-- Evaluation using **Confusion Matrix, Precision, Recall, and F1-score**
-
-### 🔹 2. Hybrid Deep Learning System
-- **VADER** → Rule-based sentiment scoring
-- **RoBERTa** → Transformer-based contextual understanding
-- **Custom decision logic** to combine both outputs
-
-This makes the project a **complete end-to-end NLP system** covering both **traditional ML and modern deep learning approaches**.
+* 🔹 Real-time sentiment prediction
+* 🔹 Clean and interactive **Streamlit UI**
+* 🔹 Emoji-based output for better user experience
+* 🔹 Lightweight and fast ML model
+* 🔹 Modular code structure
 
 ---
 
-## 🧠 How It Works
+## 🧠 Model Overview
 
-### 🔹 ML Pipeline (TF-IDF + Logistic Regression)
+### 🔹 Machine Learning Pipeline
 
-1. Input text is preprocessed:
-   - Tokenization
-   - Stop-word removal
-   - Lemmatization
-2. Text is converted into numerical vectors using **TF-IDF**
-3. Logistic Regression model predicts sentiment
-4. Model performance is evaluated using standard metrics
+* Text preprocessing using **NLTK**
+
+  * Lowercasing
+  * Stop-word removal
+  * Lemmatization
+* Feature extraction using **TF-IDF**
+* Classification using **Logistic Regression**
 
 ---
 
-### 🔹 Hybrid Model (VADER + RoBERTa)
+## ⚙️ How It Works
 
-1. User enters text in the **Streamlit app**
-2. Text is analyzed using:
-   - **VADER (NLTK)**
-   - **RoBERTa (Hugging Face Transformer)**
-3. Both models generate sentiment scores
-4. A **fusion logic layer** determines final sentiment
-5. Output displayed with emoji and confidence bars
+1. User enters text in the web interface
+2. Text is preprocessed using NLP techniques
+3. TF-IDF converts text into numerical features
+4. Logistic Regression predicts sentiment
+5. Result is displayed with emoji output
 
 ---
 
 ## 📂 Project Structure
+
+```
 Sentiment-Analysis/
 │
-├── app.py # Streamlit web interface
-├── model.py # Hybrid sentiment logic (VADER + RoBERTa)
-├── train_model.py # ML model training (TF-IDF + Logistic Regression)
-├── predict.py # ML model prediction
-├── model.pkl # Trained ML model
-├── vectorizer.pkl # TF-IDF vectorizer
-├── requirements.txt # Dependencies
-├── runtime.txt # Python version
+├── app.py              # Streamlit UI
+├── model.py            # Preprocessing + model logic
+├── model.pkl           # Trained model
+├── vectorizer.pkl      # TF-IDF vectorizer
+├── requirements.txt    # Dependencies
 └── README.md
+```
+
+---
+
+## 🛠️ Tech Stack
+
+* **Python**
+* **Streamlit**
+* **NLTK**
+* **Scikit-learn**
+
+---
+
+## 📊 Limitations
+
+* Uses a small dataset for training
+* Limited accuracy on real-world data
+* Does not handle complex context or sarcasm
+
+---
+
+## 🚀 Future Improvements
+
+* Train on larger real-world datasets
+* Add deep learning models (BERT / RoBERTa)
+* Improve preprocessing (negation, emojis)
+* Add confidence score visualization
+
+---
+
+## 👨‍💻 Author
+
+**Anshul Rajpoot**
+Electronics & Communication Engineering
+MANIT Bhopal
+
+---
+
+## ⭐ Notes
+
+This project demonstrates:
+
+* End-to-end ML pipeline development
+* Text preprocessing using NLP techniques
+* Deployment of ML applications using Streamlit
+
+---
